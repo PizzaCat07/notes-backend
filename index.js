@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import dotEnv from 'dotenv'
 import notesRouter from './apis/notes/notes.js';
+import usersRouter from './apis/users/users.js'
 dotEnv.config();
 
 
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 })
 
 app.use("/", notesRouter)
+app.use("/", usersRouter)
 
 app.listen(3001, () => {
     console.log('Server started.')
