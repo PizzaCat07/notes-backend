@@ -1,4 +1,5 @@
 import { Router } from "express";
+import jwt from 'jsonwebtoken'
 import { getFilteredDocuments, insertDocument } from "../../utilities/db-utils.js";
 
 const usersRouter = Router();
@@ -8,17 +9,29 @@ usersRouter.get('/login', async (req, res) => {
     let username = req.headers.username;
     let password = req.headers.password;
 
-    let users = await getFilteredDocuments('users', { username, password })
+    getFilteredDocuments('users', { username, password })
+        .then(users => {
+            console.log("testes", { username, password, users })
+            if (users.length > 0) {
+                let token = jwt.sign({
+                    username
+                }, process.env.SECRET_KEY, { expiresIn: process.env.TOKEN_EXPIRE})
 
-    if (users.length > 0) {
-        res.json({
-            status: true
+                console.log(token)
+                res.json({
+                    status: true,
+                    token
+                })
+            } else {
+                res.json({
+                    status: false,
+                    token: ''
+                })
+            }
         })
-    } else {
-        res.json({
-            status: false
-        })
-    }
+    // let users = await 
+
+
 
 })
 
