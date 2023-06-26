@@ -3,7 +3,7 @@ import { deleteDocument, getAllDocuments } from '../../utilities/db-utils.js';
 const notesRouter = Router();
 
 
-notesRouter.get('/notes', (req, res) => {
+notesRouter.get('/', (req, res) => {
     getAllDocuments('notes')
         .then(x => {
             res.send(x)
@@ -11,7 +11,7 @@ notesRouter.get('/notes', (req, res) => {
 })
 
 
-notesRouter.post('/notes', (req, res) => {
+notesRouter.post('/', (req, res) => {
     let body = req.body
     postMessage('notes', body)
         .then(x => {
@@ -20,7 +20,7 @@ notesRouter.post('/notes', (req, res) => {
 })
 
 
-notesRouter.delete('/notes/:id', (req, res) => {
+notesRouter.delete('/:id', (req, res) => {
     let id = req.params.id
     deleteDocument('notes', id).then(x => {
         res.send(x)

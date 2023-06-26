@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import jwt from 'jsonwebtoken'
 import dotEnv from 'dotenv'
 import notesRouter from './apis/notes/notes.js';
 import usersRouter from './apis/users/users.js'
@@ -16,7 +17,23 @@ app.get('/', (req, res) => {
     res.send("working")
 })
 
-app.use("/", notesRouter)
+
+function authenticate(req, res, next) {
+    // it will decide if you are authentic user or not
+    let token = req.headers.token;
+    try {
+        let decoded = jwt.verify(token, process.env.SECRET_KEY)
+        next()
+    } catch {
+        res.json({
+            status: false,
+            message: 'Unauthorized'
+        })
+    }
+
+}
+
+app.use("/note", authenticate, notesRouter)
 app.use("/", usersRouter)
 
 app.listen(3001, () => {
