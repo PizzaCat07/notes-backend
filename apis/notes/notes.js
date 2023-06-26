@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { deleteDocument, getAllDocuments } from '../../utilities/db-utils.js';
+import { deleteDocument, getAllDocuments,insertDocument } from '../../utilities/db-utils.js';
 const notesRouter = Router();
 
 
@@ -13,7 +13,7 @@ notesRouter.get('/', (req, res) => {
 
 notesRouter.post('/', (req, res) => {
     let body = req.body
-    postMessage('notes', body)
+    insertDocument('notes', body)
         .then(x => {
             res.send(x)
         })
