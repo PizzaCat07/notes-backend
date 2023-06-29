@@ -44,7 +44,7 @@ export function deleteDocument(collectionName, id) {
         return db.collection(collectionName)
             .deleteOne({ "_id": new ObjectId(id) })
             .then(x => {
-                return db.collection('songs')
+                return db.collection(collectionName)
                     .find()
                     .toArray()
 
