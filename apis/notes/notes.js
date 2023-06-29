@@ -1,5 +1,6 @@
 import { Router } from 'express'
-import { deleteDocument, getAllDocuments,insertDocument } from '../../utilities/db-utils.js';
+import { deleteDocument, getAllDocuments, insertDocument } from '../../utilities/db-utils.js';
+import { body, validationResult } from 'express-validator';
 const notesRouter = Router();
 
 
@@ -11,7 +12,14 @@ notesRouter.get('/', (req, res) => {
 })
 
 
-notesRouter.post('/', (req, res) => {
+notesRouter.post('/', body('noteText').notEmpty().isString(), (req, res) => {
+
+
+    const result = validationResult(req);
+    if (result.errors.length > 0) {
+        res.json(result)
+        return;
+    }
     let body = req.body
     insertDocument('notes', body)
         .then(x => {

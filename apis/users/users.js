@@ -1,39 +1,41 @@
 import { Router } from "express";
 import jwt from 'jsonwebtoken'
 import { getFilteredDocuments, insertDocument } from "../../utilities/db-utils.js";
+import { header } from "express-validator";
 
 const usersRouter = Router();
 
 
-usersRouter.get('/login', async (req, res) => {
-    let username = req.headers.username;
-    let password = req.headers.password;
+usersRouter.get('/login', header('username').notEmpty(),
+    header('password').notEmpty(), async (req, res) => {
+        let username = req.headers.username;
+        let password = req.headers.password;
 
-    getFilteredDocuments('users', { username, password })
-        .then(users => {
-            console.log("testes", { username, password, users })
-            if (users.length > 0) {
-                let token = jwt.sign({
-                    username
-                }, process.env.SECRET_KEY, { expiresIn: process.env.TOKEN_EXPIRE})
+        getFilteredDocuments('users', { username, password })
+            .then(users => {
+                console.log("testes", { username, password, users })
+                if (users.length > 0) {
+                    let token = jwt.sign({
+                        username
+                    }, process.env.SECRET_KEY, { expiresIn: process.env.TOKEN_EXPIRE })
 
-                console.log(token)
-                res.json({
-                    status: true,
-                    token
-                })
-            } else {
-                res.json({
-                    status: false,
-                    token: ''
-                })
-            }
-        })
-    // let users = await 
+                    console.log(token)
+                    res.json({
+                        status: true,
+                        token
+                    })
+                } else {
+                    res.json({
+                        status: false,
+                        token: ''
+                    })
+                }
+            })
+        // let users = await 
 
 
 
-})
+    })
 
 
 usersRouter.post("/signup", (req, res) => {
