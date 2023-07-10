@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import dotEnv from 'dotenv'
 import notesRouter from './apis/notes/notes.js';
 import usersRouter from './apis/users/users.js'
+import booksRoutes from './apis/books/books.js';
 dotEnv.config();
 
 
@@ -34,6 +35,7 @@ function authenticate(req, res, next) {
 }
 
 app.use("/notes", authenticate, notesRouter)
+app.use("/books", authenticate, booksRoutes)
 app.use("/", usersRouter)
 
 app.listen(3001, () => {

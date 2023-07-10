@@ -52,4 +52,25 @@ export function deleteDocument(collectionName, id) {
     })
 }
 
+
+export function aggregateDocuments(collectionName, pipeline) {
+    return getClient().connect().then(connection => {
+        const db = connection.db('lookup-demo')
+        return db.collection(collectionName)
+            .aggregate(pipeline)
+            .toArray()
+    })
+}
+
+
+export function getPagedDocuments(collectionName, page, itemsPerPage) {
+    let skipCount = (page - 1) * itemsPerPage;
+    return aggregateDocuments(collectionName, [{
+        $skip: skipCount
+    }, {
+        $limit: Number(itemsPerPage)
+    }])
+}
+
+
 // module.exports = { getAllDocuments, insertDocument, deleteDocument, getFilteredDocuments }
