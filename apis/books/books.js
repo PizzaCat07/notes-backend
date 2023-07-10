@@ -1,16 +1,33 @@
 import { Router } from "express";
-import { getAllDocuments, getPagedDocuments } from "../../utilities/db-utils.js";
+import { aggregateDocuments, getAllDocuments, getPagedDocuments } from "../../utilities/db-utils.js";
 
 const booksRoutes = Router();
 
 booksRoutes.get('/', (req, res) => {
-    
+
     let page = req.query.page;
     if (page) {
         let itemsPerPage = req.query.itemsPerPage ?? 10;
         getPagedDocuments('books', page, itemsPerPage)
             .then(x => {
-                res.json(x)
+
+
+                aggregateDocuments('books', [{ $count: "count" }])
+                    .then(c => {
+
+                        let totalItems = c[0].count
+
+                        let totalPages = Math.floor(totalItems / itemsPerPage) < (totalItems / itemsPerPage) ? Math.floor(totalItems / itemsPerPage) + 1 : Math.floor(totalItems / itemsPerPage)
+
+                        res.json({
+                            page,
+                            itemsPerPage,
+                            totalPages,
+                            totalItems,
+                            data: x
+                        })
+                    })
+
             })
     } else {
         // read all docs

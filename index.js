@@ -35,7 +35,7 @@ function authenticate(req, res, next) {
 }
 
 app.use("/notes", authenticate, notesRouter)
-app.use("/books", authenticate, booksRoutes)
+app.use("/books", booksRoutes)
 app.use("/", usersRouter)
 
 app.listen(3001, () => {
