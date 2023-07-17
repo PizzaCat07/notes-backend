@@ -1,18 +1,49 @@
 import { Router } from 'express'
-import { getAllDocuments } from '../../utilities/db-utils.js';
+import { aggregateDocuments, getAllDocuments, insertDocument } from '../../utilities/db-utils.js';
+import { ObjectId } from 'mongodb';
 
 export const postsRoutes = Router();
 
+
+
+postsRoutes.post('/', (req, res) => {
+    let authorId = req.headers.authorId
+    console.log('authorId', authorId)
+    let { content } = req.body;  // { content:"Heyy", authorId:"12jkjdksl3kedjkljsfk" }
+    let post = {
+        content: content,
+        author: new ObjectId(authorId)
+    }
+    insertDocument('posts', post)
+        .then(x => {
+            res.json({ status: true, message: "Post Created" })
+        })
+        .catch(err => {
+            res.json({ status: false, message: err })
+        })
+})
+
+
 postsRoutes.get('/', (req, res) => {
 
-
-    // looup query
-
-    res.json([
-        {
-            content: "Heey",
-            authorUsername:"Admin",            
+    aggregateDocuments('posts', [{
+        $lookup: {
+            from: "users",
+            localField: "author",
+            foreignField: "_id",
+            as: "authorsThatMatched"
         }
-    ])
+    },
+    {
+        $addFields: { author: { $first: "$authorsThatMatched" } }
+    },
+    {
+        $project: { authorsThatMatched: false, "author.password": false }
+    }])
+        .then(data => {
+            res.json(data)
+        })
+
+
 
 })

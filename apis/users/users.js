@@ -16,7 +16,8 @@ usersRouter.get('/login', header('username').notEmpty(),
                 console.log("testes", { username, password, users })
                 if (users.length > 0) {
                     let token = jwt.sign({
-                        username
+                        username,
+                        _id:users[0]._id
                     }, process.env.SECRET_KEY, { expiresIn: process.env.TOKEN_EXPIRE })
 
                     console.log(token)

@@ -25,6 +25,7 @@ function authenticate(req, res, next) {
     let token = req.headers.token;
     try {
         let decoded = jwt.verify(token, process.env.SECRET_KEY)
+        req.headers["authorId"] = decoded._id
         next()
     } catch {
         res.json({
@@ -36,8 +37,8 @@ function authenticate(req, res, next) {
 }
 
 app.use("/notes", authenticate, notesRouter)
-app.use("/books", booksRoutes)
-app.use("/posts", postsRoutes)
+app.use("/books", authenticate, booksRoutes)
+app.use("/posts", authenticate, postsRoutes)
 app.use("/", usersRouter)
 
 app.listen(3001, () => {
