@@ -5,6 +5,7 @@ import dotEnv from 'dotenv'
 import notesRouter from './apis/notes/notes.js';
 import usersRouter from './apis/users/users.js'
 import booksRoutes from './apis/books/books.js';
+import { postsRoutes } from './apis/posts/posts.js';
 dotEnv.config();
 
 
@@ -36,6 +37,7 @@ function authenticate(req, res, next) {
 
 app.use("/notes", authenticate, notesRouter)
 app.use("/books", booksRoutes)
+app.use("/posts", postsRoutes)
 app.use("/", usersRouter)
 
 app.listen(3001, () => {
