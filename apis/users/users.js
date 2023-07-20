@@ -1,6 +1,6 @@
 import { Router } from "express";
 import jwt from 'jsonwebtoken'
-import { getFilteredDocuments, insertDocument } from "../../utilities/db-utils.js";
+import { getFilteredDocuments, insertDocument, updateDocumentWithId } from "../../utilities/db-utils.js";
 import { header } from "express-validator";
 import { authenticate } from "../../utilities/middlewares.js";
 import { ObjectId } from "mongodb";
@@ -64,6 +64,20 @@ usersRouter.get('/profile', authenticate, async (req, res) => {
             success: false
         })
     }
+})
+
+
+
+
+usersRouter.patch('/profile', authenticate, async (req, res) => {
+    let userId = req.headers.authorId;
+    let { username, password } = req.body;
+    updateDocumentWithId('users', userId, { username, password })
+        .then(x => {
+            return res.json({
+                success: x.acknowledged
+            })
+        })
 })
 
 

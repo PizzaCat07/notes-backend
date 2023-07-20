@@ -52,6 +52,14 @@ export function deleteDocument(collectionName, id) {
     })
 }
 
+export function updateDocumentWithId(collectionName, id, newValues) {
+    return getClient().connect().then(connection => {
+        const db = connection.db('lookup-demo')
+        return db.collection(collectionName)
+            .updateOne({ "_id": new ObjectId(id) }, { $set: newValues })
+    })
+}
+
 
 export function aggregateDocuments(collectionName, pipeline) {
     return getClient().connect().then(connection => {
