@@ -1,11 +1,11 @@
 import express from 'express'
-import cors from 'cors'
-import jwt from 'jsonwebtoken'
+import cors from 'cors' 
 import dotEnv from 'dotenv'
 import notesRouter from './apis/notes/notes.js';
 import usersRouter from './apis/users/users.js'
 import booksRoutes from './apis/books/books.js';
 import { postsRoutes } from './apis/posts/posts.js';
+import { authenticate } from './utilities/middlewares.js';
 dotEnv.config();
 
 
@@ -20,21 +20,6 @@ app.get('/', (req, res) => {
 })
 
 
-function authenticate(req, res, next) {
-    // it will decide if you are authentic user or not
-    let token = req.headers.token;
-    try {
-        let decoded = jwt.verify(token, process.env.SECRET_KEY)
-        req.headers["authorId"] = decoded._id
-        next()
-    } catch {
-        res.json({
-            status: false,
-            message: 'Unauthorized'
-        })
-    }
-
-}
 
 app.use("/notes", authenticate, notesRouter)
 app.use("/books", authenticate, booksRoutes)

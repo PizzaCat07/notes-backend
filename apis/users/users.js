@@ -2,6 +2,8 @@ import { Router } from "express";
 import jwt from 'jsonwebtoken'
 import { getFilteredDocuments, insertDocument } from "../../utilities/db-utils.js";
 import { header } from "express-validator";
+import { authenticate } from "../../utilities/middlewares.js";
+import { ObjectId } from "mongodb";
 
 const usersRouter = Router();
 
@@ -17,7 +19,7 @@ usersRouter.get('/login', header('username').notEmpty(),
                 if (users.length > 0) {
                     let token = jwt.sign({
                         username,
-                        _id:users[0]._id
+                        _id: users[0]._id
                     }, process.env.SECRET_KEY, { expiresIn: process.env.TOKEN_EXPIRE })
 
                     console.log(token)
@@ -47,6 +49,21 @@ usersRouter.post("/signup", (req, res) => {
             success: true
         })
     })
+})
+
+
+usersRouter.get('/profile', authenticate, async (req, res) => {
+    let userId = req.headers.authorId;
+    let items = await getFilteredDocuments('users', {
+        _id: new ObjectId(userId)
+    });
+    if (items.length > 0) {
+        return res.json(items[0])
+    } else {
+        return res.json({
+            success: false
+        })
+    }
 })
 
 
