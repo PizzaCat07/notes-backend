@@ -6,7 +6,7 @@ function getClient() {
 
 export function getAllDocuments(collectionName) {
     return getClient().connect().then(connection => {
-        const db = connection.db('lookup-demo');
+        const db = connection.db(process.env.DEFAULT_DATABASE);
         return db.collection(collectionName)
             .find()
             .toArray()
@@ -16,7 +16,7 @@ export function getAllDocuments(collectionName) {
 
 export function getFilteredDocuments(collectionName, query) {
     return getClient().connect().then(connection => {
-        const db = connection.db('lookup-demo');
+        const db = connection.db(process.env.DEFAULT_DATABASE);
         return db.collection(collectionName)
             .find(query)
             .toArray()
@@ -26,7 +26,7 @@ export function getFilteredDocuments(collectionName, query) {
 
 export function insertDocument(collectionName, document) {
     return getClient().connect().then(connection => {
-        const db = connection.db('lookup-demo')
+        const db = connection.db(process.env.DEFAULT_DATABASE)
         return db.collection(collectionName)
             .insertOne(document)
             .then(x => {
@@ -40,7 +40,7 @@ export function insertDocument(collectionName, document) {
 
 export function deleteDocument(collectionName, id) {
     return getClient().connect().then(connection => {
-        const db = connection.db('lookup-demo')
+        const db = connection.db(process.env.DEFAULT_DATABASE)
         return db.collection(collectionName)
             .deleteOne({ "_id": new ObjectId(id) })
             .then(x => {
@@ -54,7 +54,7 @@ export function deleteDocument(collectionName, id) {
 
 export function updateDocumentWithId(collectionName, id, newValues) {
     return getClient().connect().then(connection => {
-        const db = connection.db('lookup-demo')
+        const db = connection.db(process.env.DEFAULT_DATABASE)
         return db.collection(collectionName)
             .updateOne({ "_id": new ObjectId(id) }, { $set: newValues })
     })
@@ -63,7 +63,7 @@ export function updateDocumentWithId(collectionName, id, newValues) {
 
 export function aggregateDocuments(collectionName, pipeline) {
     return getClient().connect().then(connection => {
-        const db = connection.db('lookup-demo')
+        const db = connection.db(process.env.DEFAULT_DATABASE)
         return db.collection(collectionName)
             .aggregate(pipeline)
             .toArray()

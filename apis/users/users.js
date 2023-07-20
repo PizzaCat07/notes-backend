@@ -19,7 +19,8 @@ usersRouter.get('/login', header('username').notEmpty(),
                 if (users.length > 0) {
                     let token = jwt.sign({
                         username,
-                        _id: users[0]._id
+                        _id: users[0]._id,
+                        avatar:users[0].avatar
                     }, process.env.SECRET_KEY, { expiresIn: process.env.TOKEN_EXPIRE })
 
                     console.log(token)
@@ -42,9 +43,9 @@ usersRouter.get('/login', header('username').notEmpty(),
 
 
 usersRouter.post("/signup", (req, res) => {
-    let obj = req.body;
+    let { username, password, avatar } = req.body;
 
-    insertDocument('users', obj).then(x => {
+    insertDocument('users', { username, password, avatar }).then(x => {
         res.send({
             success: true
         })
@@ -71,8 +72,8 @@ usersRouter.get('/profile', authenticate, async (req, res) => {
 
 usersRouter.patch('/profile', authenticate, async (req, res) => {
     let userId = req.headers.authorId;
-    let { username, password } = req.body;
-    updateDocumentWithId('users', userId, { username, password })
+    let { username, password, avatar } = req.body;
+    updateDocumentWithId('users', userId, { username, password, avatar })
         .then(x => {
             return res.json({
                 success: x.acknowledged
