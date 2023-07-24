@@ -3,6 +3,29 @@ import { aggregateDocuments, getAllDocuments, getPagedDocuments } from "../../ut
 
 const booksRoutes = Router();
 
+
+/**
+ * @openapi
+ * /books:
+ *   get:
+ *     tags: 
+ *      - Book 
+ *     description: Get all books
+ *     operationId: GetAllBooks
+ *     responses:
+ *       200:
+ *         description: Returns a mysterious string.
+ *         content:
+ *          application/json:
+ *           schema:
+ *            type: object
+ *            properties:
+ *             page:
+ *              type: number
+ *             itemsPerPage:
+ *              type: number
+ *              
+ */
 booksRoutes.get('/', (req, res) => {
 
     let page = req.query.page;
