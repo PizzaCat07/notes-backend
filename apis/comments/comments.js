@@ -39,7 +39,10 @@ commentsRouter.get('/:postId', (req, res) => {
 commentsRouter.post('/:postId', (req, res) => {
     let body = req.body;
     body['postId'] = new ObjectId(req.params.postId)
-    body['authorId'] = new ObjectId(req.headers.authorId)
+    body['authorId'] = new ObjectId(req.headers.authorId);
+    if (body?.replyTo) {
+        body['replyTo'] = new ObjectId(body.replyTo)
+    }
     insertDocument('comments', body).then(x => {
 
         return res.json({
