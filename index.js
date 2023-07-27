@@ -10,6 +10,7 @@ import { authenticate } from './utilities/middlewares.js';
 import { upload } from './utilities/grid-fs.util.js';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
+import { commentsRouter } from './apis/comments/comments.js';
 
 dotEnv.config();
 
@@ -98,6 +99,7 @@ app.get('/image/:filename', (req, res) => {
 app.use("/notes", authenticate, notesRouter)
 app.use("/books", authenticate, booksRoutes)
 app.use("/posts", authenticate, postsRoutes)
+app.use("/comments", authenticate, commentsRouter)
 app.use("/", usersRouter)
 
 
