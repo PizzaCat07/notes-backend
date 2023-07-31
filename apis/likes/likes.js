@@ -38,7 +38,7 @@ likesRouter.patch('/:postId', async (req, res) => {
         //need to remove "like" entry
         let likeId = x[0]._id;
 
-        await deleteDocument('likes', likeId)
+        let newLikesCollection = await deleteDocument('likes', likeId)
         let postObject = (await getFilteredDocuments('posts', { _id: new ObjectId(req.params.postId) }))[0]
         console.log(postObject)
         let newLikes = isNaN(postObject?.likes) ? 0 : Number(postObject?.likes) - 1;
@@ -47,12 +47,14 @@ likesRouter.patch('/:postId', async (req, res) => {
         }
         await updateDocumentWithId('posts', req.params.postId, { likes: newLikes })
         res.json({
-            success: true
+            success: true,
+            newLikes,
+            newLikesCollection
         })
 
     } else {
         // create "like" entry
-        await insertDocument('likes', {
+        let newLikesCollection = await insertDocument('likes', {
             postId: new ObjectId(req.params.postId),
             authorId: new ObjectId(authorId)
         })
@@ -64,7 +66,9 @@ likesRouter.patch('/:postId', async (req, res) => {
         await updateDocumentWithId('posts', req.params.postId, { likes: newLikes })
 
         res.json({
-            success: true
+            success: true,
+            newLikes,
+            newLikesCollection
         })
     }
 
