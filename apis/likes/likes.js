@@ -42,6 +42,9 @@ likesRouter.patch('/:postId', async (req, res) => {
         let postObject = (await getFilteredDocuments('posts', { _id: new ObjectId(req.params.postId) }))[0]
         console.log(postObject)
         let newLikes = isNaN(postObject?.likes) ? 0 : Number(postObject?.likes) - 1;
+        if (newLikes < 0) {
+            newLikes = 0
+        }
         await updateDocumentWithId('posts', req.params.postId, { likes: newLikes })
         res.json({
             success: true
@@ -56,8 +59,8 @@ likesRouter.patch('/:postId', async (req, res) => {
 
         let postObject = (await getFilteredDocuments('posts', { _id: new ObjectId(req.params.postId) }))[0]
         console.log(postObject)
-        
-        let newLikes = isNaN(postObject?.likes) ? 0 : Number(postObject?.likes) + 1;
+
+        let newLikes = isNaN(postObject?.likes) ? 1 : Number(postObject?.likes) + 1;
         await updateDocumentWithId('posts', req.params.postId, { likes: newLikes })
 
         res.json({
